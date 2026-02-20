@@ -1,489 +1,458 @@
-<!DOCTYPE html>
- <html lang="en">
- <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Eman Bakery - Internal Work Regulation</title>
-     
-     <!-- Tailwind CSS for styling -->
-     <script src="https://cdn.tailwindcss.com"></script>
-     
-     <!-- Google Fonts for Professional English and Arabic Typography -->
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-     
-     <style>
--        /* Base typography setup */
-+        :root {
-+            --brand-primary: #6f4e2e;
-+            --brand-primary-dark: #4f351d;
-+            --ink-main: #1f2937;
-+            --ink-muted: #4b5563;
-+            --paper-bg: #f1f3f7;
-+            --rule-soft: #d9dee8;
-+        }
-+
-         body {
--            background-color: #f3f4f6; /* Light gray background for the screen */
-+            background: var(--paper-bg);
-+            color: var(--ink-main);
-             -webkit-print-color-adjust: exact;
-             print-color-adjust: exact;
-         }
--        
-+
-         .font-arabic { font-family: 'Cairo', sans-serif; }
-         .font-english { font-family: 'Inter', sans-serif; }
--        
--        /* A4 Page Styling for Screen Preview */
-+
-         .a4-container {
-             width: 210mm;
-             min-height: 297mm;
--            margin: 40px auto;
--            background: white;
--            padding: 20mm;
--            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-+            margin: 32px auto;
-+            background: #fff;
-+            padding: 18mm 12mm;
-+            box-shadow: 0 16px 40px rgba(17, 24, 39, 0.12);
-+            border-top: 6px solid var(--brand-primary);
-             position: relative;
-+            overflow: hidden;
-+        }
-+
-+        .a4-container::before {
-+            content: "EMAN BAKERY";
-+            position: absolute;
-+            inset: 44% auto auto 50%;
-+            transform: translate(-50%, -50%) rotate(-32deg);
-+            font-family: 'Inter', sans-serif;
-+            font-weight: 800;
-+            letter-spacing: 0.3rem;
-+            font-size: 56px;
-+            color: rgba(111, 78, 46, 0.04);
-+            pointer-events: none;
-+            white-space: nowrap;
-         }
- 
--        /* Prevent page breaks inside important blocks */
-+        .doc-meta {
-+            border: 1px solid var(--rule-soft);
-+            background: #f9fafb;
-+            font-size: 11px;
-+            margin-bottom: 28px;
-+        }
-+
-+        .doc-meta p { margin: 0; }
-+
-+        .article-block {
-+            border: 1px solid #e5e7eb;
-+            border-radius: 8px;
-+            padding: 14px;
-+            background: linear-gradient(180deg, rgba(249,250,251,0.65) 0%, #fff 100%);
-+            margin-bottom: 14px;
-+        }
-+
-+        .article-block h3 { color: var(--brand-primary); }
-+
-         .avoid-break {
-             page-break-inside: avoid;
-             break-inside: avoid;
-         }
- 
--        /* Print Media Queries */
-+        .print-border { border-bottom-color: transparent !important; }
-+
-         @media print {
-             @page {
-                 size: A4 portrait;
--                margin: 10mm 12mm; /* Slimmer margins to ensure content fits perfectly */
-+                margin: 8mm 7mm;
-             }
-+
-             body, html {
--                background-color: white !important;
-+                background: #fff !important;
-                 margin: 0 !important;
-                 padding: 0 !important;
-                 height: auto !important;
-             }
-+
-             .a4-container {
-                 width: 100% !important;
-                 min-height: auto !important;
-                 margin: 0 !important;
-                 padding: 0 !important;
-                 box-shadow: none !important;
--                position: static !important;
-+                border-top-width: 4px !important;
-             }
--            
--            /* --- ULTIMATE BUG FIX FOR CHROME PRINT ENGINE --- */
-+
-+            .a4-container::before { display: none; }
-+
-             .grid {
-                 display: flex !important;
-                 flex-direction: row !important;
-                 flex-wrap: nowrap !important;
-             }
-+
-             .grid-cols-2 > div {
-                 flex: 1 1 50% !important;
-                 width: 50% !important;
-                 max-width: 50% !important;
-             }
--            
--            /* THE CULPRIT: Chrome panics if we tell it to "avoid breaks" on large text blocks.
--               We must override it to 'auto' so it allows text to flow to page 2 naturally. */
-+
-+            .article-block {
-+                border: none !important;
-+                border-radius: 0 !important;
-+                padding: 0 0 14px 0 !important;
-+                margin-bottom: 8px !important;
-+                background: transparent !important;
-+                border-bottom: 1px solid #e5e7eb !important;
-+            }
-+
-             .avoid-break {
-                 page-break-inside: auto !important;
-                 break-inside: auto !important;
-                 -webkit-column-break-inside: auto !important;
-             }
- 
--            /* We specifically protect ONLY the header, title, signatures, and footer from splitting */
--            header, .text-center.mb-10, footer, .mt-16.pt-12 {
-+            header, .doc-meta, .text-center.mb-8, footer, .mt-12.pt-10 {
-                 page-break-inside: avoid !important;
-                 break-inside: avoid !important;
-             }
--            /* ------------------------------------------------- */
--            
--            .no-print {
--                display: none !important;
--            }
--            .print-border {
--                border-bottom: 1px solid #e5e7eb;
--            }
-+
-+            .no-print { display: none !important; }
-         }
-     </style>
- </head>
- <body class="text-gray-800">
- 
-     <!-- Floating Print Button (Hidden during actual printing) -->
--    <div class="fixed bottom-8 right-8 no-print z-50">
--        <button onclick="window.print()" class="bg-[#8b6131] hover:bg-[#6b4a25] text-white font-english font-semibold py-3 px-6 rounded-full shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105">
-+    <div class="fixed bottom-6 right-6 no-print z-50">
-+        <button onclick="window.print()" class="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-dark)] text-white font-english font-semibold py-3 px-5 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300">
-             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-             </svg>
-             Print Document (A4)
-         </button>
-     </div>
- 
-     <!-- Document Container -->
-     <div class="a4-container">
-         
-         <!-- HEADER / LETTERHEAD -->
--        <header class="flex justify-between items-center border-b-2 border-[#8b6131] pb-6 mb-8">
-+        <header class="flex justify-between items-center border-b border-[var(--rule-soft)] pb-6 mb-4">
-             <!-- Left: English Details -->
-             <div class="font-english text-xs text-gray-600 space-y-1 w-1/3 text-left">
-                 <p class="font-bold text-gray-800 text-sm">Emhan Bakery Jeddah for Bread Co.</p>
-                 <p>CR: 4030331653</p>
-                 <p>Unified No.: 9-4000319</p>
-                 <p>National Unified No.: 7015036309</p>
-             </div>
- 
-             <!-- Center: Logo -->
-             <div class="w-1/3 flex justify-center">
--                <img src="https://emanbakeries.com/images/branding/logo.png" alt="Eman Bakery Logo" class="h-24 object-contain">
-+                <img src="https://emanbakeries.com/images/branding/logo.png" alt="Eman Bakery Logo" class="h-20 object-contain">
-             </div>
- 
-             <!-- Right: Arabic Details -->
-             <div class="font-arabic text-xs text-gray-600 space-y-1 w-1/3 text-right" dir="rtl">
-                 <p class="font-bold text-gray-800 text-sm">شركة مخابز إيمان جدة للخبز</p>
-                 <p>السجل التجاري : 4030331653</p>
-                 <p>الرقم الموحد: 9-4000319</p>
-                 <p>الرقم الموحد الوطني: 7015036309</p>
-             </div>
-         </header>
- 
-+        <!-- DOCUMENT META -->
-+        <div class="doc-meta grid grid-cols-3 gap-0 divide-x divide-gray-300 text-gray-600 font-english">
-+            <p class="p-2 text-center"><span class="font-semibold text-gray-800">Document No.</span> HR-IWR-2026</p>
-+            <p class="p-2 text-center"><span class="font-semibold text-gray-800">Version</span> 1.0</p>
-+            <p class="p-2 text-center"><span class="font-semibold text-gray-800">Effective Date</span> 01 Jan 2026</p>
-+        </div>
-+
-         <!-- TITLE -->
--        <div class="text-center mb-10">
--            <h1 class="text-3xl font-bold font-english text-[#8b6131] uppercase tracking-wider mb-2">Internal Work Regulation</h1>
--            <h2 class="text-3xl font-bold font-arabic text-[#8b6131] uppercase tracking-wider">لائحة تنظيم العمل الداخلية</h2>
-+        <div class="text-center mb-8">
-+            <h1 class="text-2xl font-bold font-english text-[var(--brand-primary)] uppercase tracking-[0.2em] mb-2">Internal Work Regulation</h1>
-+            <h2 class="text-2xl font-bold font-arabic text-[var(--brand-primary)] tracking-wide">لائحة تنظيم العمل الداخلية</h2>
-         </div>
- 
-         <!-- CONTENT BILINGUAL GRID -->
-         <div class="space-y-8">
- 
-             <!-- Article 1 -->
--            <div class="grid grid-cols-2 gap-8 border-b print-border pb-6 avoid-break">
--                <div class="font-english text-left text-sm text-justify pr-4" dir="ltr">
-+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
-+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">Article 1 – General Provisions</h3>
-                     <p class="mb-2">This Internal Work Regulation is issued in accordance with the Saudi Labor Law promulgated by Royal Decree No. (M/51) dated 23/08/1426H and its amendments. These regulations have been prepared to establish a clear framework for employment relationships within our organization and to ensure compliance with national labor standards.</p>
-                     <p class="mb-2">These regulations apply to all employees of Emhan Bakery Jeddah for Bread Co. and serve as a comprehensive guide to employment terms, working conditions, employee rights, and employer obligations. They complement individual employment contracts and must be applied in a manner consistent with the provisions of the Saudi Labor Law.</p>
-                     <p class="mb-2">The purpose of these regulations is to create a transparent, fair, and productive work environment where both employers and employees understand their respective rights and responsibilities. All provisions contained herein must be interpreted and applied in accordance with applicable labor legislation and regulations.</p>
-                     <p>Employees are required to familiarize themselves with these regulations upon joining the company, and management is committed to ensuring that copies are made available to all staff members. Any questions regarding the application or interpretation of these provisions should be directed to the Human Resources department.</p>
-                 </div>
--                <div class="font-arabic text-right text-sm text-justify pl-4 border-l border-gray-200" dir="rtl">
-+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (1) - أحكام عامة</h3>
-                     <p class="mb-2">تصدر لائحة تنظيم العمل هذه وفقاً لنظام العمل السعودي الصادر بالمرسوم الملكي رقم (م/51) وتاريخ 23/08/1426هـ وتعديلاته. وتم إعداد هذه اللائحة لتأسيس إطار واضح لعلاقات العمل داخل منظمتنا ولضمان الامتثال للمعايير الوطنية للعمل.</p>
-                     <p class="mb-2">وتسري هذه اللائحة على جميع العاملين في شركة مخابز إيمان جدة للخبز وتعد مكملة لعقود العمل، ويجب تطبيقها بما يتماشى مع أحكام نظام العمل.</p>
-                     <p class="mb-2">الغرض من هذه اللائحة هو خلق بيئة عمل شفافة وعادلة ومنتجة حيث يفهم كل من أصحاب العمل والموظفين حقوقهم ومسؤولياتهم المقابلة. ويجب تفسير وتطبيق جميع الأحكام الواردة هنا وفقاً للتشريعات واللوائح الأنظمة المعمول بها.</p>
-                     <p>يطلب من الموظفين التعرف على هذه اللائحة عند الانضمام إلى الشركة، وتعتزم الإدارة ضمان توفير نسخ منها لجميع الموظفين. يجب توجيه أي استفسارات بشأن التطبيق أو التفسير لهذه الأحكام إلى إدارة الموارد البشرية.</p>
-                 </div>
-             </div>
- 
-             <!-- Articles 2-3 -->
--            <div class="grid grid-cols-2 gap-8 border-b print-border pb-6 avoid-break">
--                <div class="font-english text-left text-sm text-justify pr-4" dir="ltr">
-+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
-+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 2-3 – Employment Contracts & Working Hours</h3>
-                     <h4 class="font-bold mb-1">Employment Contracts</h4>
-                     <p class="mb-3">Employment contracts shall be concluded in writing through the Qiwa platform, which is the official electronic platform designated by the Ministry of Human Resources and Social Development for managing employment contracts in Saudi Arabia. Contracts may be fixed-term and renewable. The contract duration will be specified at the time of hiring based on the nature of the position and business requirements.</p>
-                     <p class="mb-4">The probation period shall be 90 days within legal limits. During this probationary period, both the employer and employee have the right to terminate the employment relationship with a 7-day notice, as stipulated in Article 57 of the Labor Law.</p>
-                     
-                     <h4 class="font-bold mb-1">Working Hours</h4>
-                     <p class="mb-2">Normal working hours shall not exceed 8 hours per day and 48 hours per week. The company shall establish specific working hours for different positions and departments based on operational requirements. Employees are required to work the full scheduled hours as assigned and must obtain prior approval for any variations from the normal working schedule.</p>
-                     <p>Working hours may be adjusted during special circumstances such as business emergencies, peak operational periods, or as otherwise permitted by the Labor Law.</p>
-                 </div>
--                <div class="font-arabic text-right text-sm text-justify pl-4 border-l border-gray-200" dir="rtl">
-+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (2) - عقود العمل | المادة (3) - ساعات العمل</h3>
-                     <h4 class="font-bold mb-1">عقود العمل</h4>
-                     <p class="mb-3">يتم إبرام عقود العمل كتابة عبر منصة قوى، وهي المنصة الإلكترونية الرسمية المعتمدة من وزارة الموارد البشرية والتنمية الاجتماعية لإدارة عقود العمل في المملكة العربية السعودية. تكون العقود محددة المدة وقابلة للتجديد حسب حاجة العمل. ومدة العقد تحدد وقت التوظيف بناءً على طبيعة الوظيفة ومتطلبات العمل.</p>
-                     <p class="mb-4">تكون مدة التجربة تسعين (90) يوماً وفق الحدود النظامية. خلال فترة التجربة، يحق لكل من صاحب العمل والموظف إنهاء علاقة العمل بإشعار مدته سبعة أيام، كما هو منصوص عليه في المادة (57) من نظام العمل.</p>
-                     
-                     <h4 class="font-bold mb-1">ساعات العمل</h4>
-                     <p class="mb-2">لا يجوز أن تزيد ساعات العمل الفعلية عن ثماني (8) ساعات يومياً وثمان وأربعين (48) ساعة أسبوعياً. وتعمل الشركة على تحديد ساعات العمل الخاصة بكل وظيفة وإدارات بناءً على طبيعة العمل المرتبطة بكل منها. ويجب على الموظفين العمل بالكامل بالساعات المجدولة المخصصة لهم، ويجب عليهم الحصول على موافقة مسبقة لأي اختلافات عن الجدول الزمني العادي.</p>
-                     <p>قد يتم تعديل ساعات العمل خلال الظروف الخاصة مثل حالات الطوارئ، أو فترات العمل المزدحمة، أو كما يسمح به نظام العمل.</p>
-                 </div>
-             </div>
- 
-             <!-- Articles 4-5 -->
--            <div class="grid grid-cols-2 gap-8 border-b print-border pb-6 avoid-break">
--                <div class="font-english text-left text-sm text-justify pr-4" dir="ltr">
-+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
-+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 4-5 – Shift System & Weekly Rest</h3>
-                     <h4 class="font-bold mb-1">Shift System</h4>
-                     <p class="mb-3">Due to operational requirements, the company operates a shift system including day and night shifts. This arrangement is necessary to ensure continuous bakery operations and meet customer demand throughout the day and night hours. The shift schedule shall be determined by management based on production requirements and may be subject to change as operational needs dictate.</p>
-                     
-                     <h4 class="font-bold mb-1">Weekly Rest</h4>
-                     <p class="mb-2">Friday shall be the official weekly rest day for all employees, in accordance with Islamic tradition and Saudi labor regulations. If business necessity requires work on Friday, compensation shall be provided at 150% of the hourly wage or by granting a compensatory day off. Such work on Friday shall only be authorized when essential for business operations.</p>
-                 </div>
--                <div class="font-arabic text-right text-sm text-justify pl-4 border-l border-gray-200" dir="rtl">
-+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (4) - نظام الورديات | المادة (5) - الراحة الأسبوعية</h3>
-                     <h4 class="font-bold mb-1">نظام الورديات</h4>
-                     <p class="mb-3">نظراً لطبيعة نشاط الشركة، يُطبق نظام الورديات الذي يشمل الوردية النهارية والوردية الليلية. وتعد هذه الصيغة ضرورية لضمان عمليات الخبز المستمرة وتلبية طلبات العملاء على مدار اليوم. يُحدد مدير العمل جدول الورديات بناءً على متطلبات الإنتاج وقد يكون معرضًا للتعديل كما تقتضى الحاجة التشغيلية.</p>
-                     
-                     <h4 class="font-bold mb-1">الراحة الأسبوعية</h4>
-                     <p class="mb-2">يكون يوم الجمعة هو يوم الراحة الأسبوعية الرسمية لجميع الموظفين وفقا للعرف الإسلامي وأنظمة العمل السعودية. في حال اقتضت مصلحة العمل تشغيل الموظف في هذا اليوم، يتم تعويضه بأجر إضافي يعادل 150% من أجر الساعة أو بمنحه يوم راحة بديل. ويُسمح بالعمل يوم الجمعة فقط عند الضرورة للأعمال التشغيلية.</p>
-                 </div>
-             </div>
- 
-              <!-- Articles 6-7 -->
--            <div class="grid grid-cols-2 gap-8 border-b print-border pb-6 avoid-break">
--                <div class="font-english text-left text-sm text-justify pr-4" dir="ltr">
-+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
-+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 6-7 - Overtime & Wages</h3>
-                     <h4 class="font-bold mb-1">Overtime</h4>
-                     <p class="mb-3">Overtime work shall be compensated at 150% of the hourly wage in accordance with Article 107 of the Labor Law. The company shall only authorize overtime work when necessary for business operations, and employees must obtain prior approval before performing any overtime work. Unauthorized overtime work will not be compensated.</p>
-                     
-                     <h4 class="font-bold mb-1">Wages</h4>
-                     <p>Wages shall be paid monthly through the Wage Protection System (WPS). All employees must have an active bank account enrolled in the WPS system. The wage shall be as specified in the employment contract and structured as basic wage unless otherwise agreed. Wage payments shall be made on or before the designated payment date each month.</p>
-                 </div>
--                <div class="font-arabic text-right text-sm text-justify pl-4 border-l border-gray-200" dir="rtl">
-+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (6) - العمل الإضافي | المادة (7) - الأجور</h3>
-                     <h4 class="font-bold mb-1">العمل الإضافي</h4>
-                     <p class="mb-3">يتم تعويض العمل الإضافي بما يعادل 150% من أجر الساعة وفقاً للمادة (107) من نظام العمل. ويجوز للشركة السماح بالعمل الإضافي فقط عند الضرورة لأغراض الأعمال، ويجب على الموظفين الحصول على موافقة مسبقة قبل القيام بأي عمل إضافي، لن يعوض العمل الإضافي غير المصرح به.</p>
-                     
-                     <h4 class="font-bold mb-1">الأجور</h4>
-                     <p>تصرف الأجور شهرياً عبر نظام حماية الأجور (WPS). ويجب أن يكون لدى جميع الموظفين حساب بنكي نشط مسجل في نظام حماية الأجور. ويكون الأجر وفقاً لما هو محدد في عقد العمل ويعتبر أجراً أساسياً ما لم يتم الاتفاق كتابة على خلاف ذلك. سيتم دفع الأجر في موعد الدفع المحدد أو قبله كل شهر.</p>
-                 </div>
-             </div>
- 
-             <!-- Articles 8-9 -->
--            <div class="grid grid-cols-2 gap-8 border-b print-border pb-6 avoid-break">
--                <div class="font-english text-left text-sm text-justify pr-4" dir="ltr">
-+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
-+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 8-9 – Benefits & Attendance</h3>
-                     <h4 class="font-bold mb-1">Accommodation & Transportation</h4>
-                     <p class="mb-3">The company provides accommodation and transportation as in-kind benefits. The provision of accommodation and transportation does not constitute cash allowances unless specifically agreed in writing. As such, these benefits do not increase the employee's basic wage for the purpose of calculating overtime or end of service benefits.</p>
-                     
-                     <h4 class="font-bold mb-1">Attendance</h4>
-                     <p>The company shall implement a biometric attendance system to accurately record employee presence. Employees must comply with attendance procedures including clocking in at the beginning of their shift, and clocking out at the end. Failure to properly register attendance may result in disciplinary action or wage deduction.</p>
-                 </div>
--                <div class="font-arabic text-right text-sm text-justify pl-4 border-l border-gray-200" dir="rtl">
-+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (8) - السكن والنقل | المادة (9) - الحضور والانصراف</h3>
-                     <h4 class="font-bold mb-1">السكن والنقل</h4>
-                     <p class="mb-3">توفر الشركة السكن والنقل للموظفين كميزة عينية. لا تعد هذه المزايا بدلات نقدية ما لم يتم الاتفاق عليها كتابة. وبالتالي، لا تزيد هذه المزايا الأجر الأساسي للموظف لأغراض حساب العمل الإضافي أو مكافآت نهاية الخدمة، إلا إذا نص على خلاف ذلك في عقد التوظيف.</p>
-                     
-                     <h4 class="font-bold mb-1">الحضور والانصراف</h4>
-                     <p>تعمل الشركة على تطبيق نظام حضور وانصراف إلكتروني يعتمد على البيانات الحيوية. يجب على الموظفين الالتزام بإجراءات الحضور بما في ذلك التسجيل في بداية وردية العمل وتسجيل الخروج في النهاية. قد ينتج عن عدم التسجيل الصحيح للحضور إجراء تأديبي أو حسم من الأجر.</p>
-                 </div>
-             </div>
- 
-             <!-- Articles 10-11 -->
--            <div class="grid grid-cols-2 gap-8 border-b print-border pb-6 avoid-break">
--                <div class="font-english text-left text-sm text-justify pr-4" dir="ltr">
-+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
-+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 10-11 - Absence & Leaves</h3>
-                     <h4 class="font-bold mb-1">Absence</h4>
-                     <p class="mb-3">Unauthorized absence shall result in wage deduction equivalent to the absence period, in accordance with Article 91 of the Labor Law. Employees unable to attend work must notify their supervisor or HR as early as possible.</p>
-                     
-                     <h4 class="font-bold mb-1">Leaves</h4>
-                     <ul class="list-disc pl-4 space-y-1 text-xs">
-                         <li><strong>Annual Leave:</strong> 21 days per year. 30 days after 5 years of service.</li>
-                         <li><strong>Sick Leave:</strong> 30 days full pay, 60 days 75% pay, 30 days unpaid (requires medical certificate).</li>
-                         <li><strong>Marriage Leave:</strong> 5 days.</li>
-                         <li><strong>Paternity Leave:</strong> 3 days for male employees.</li>
-                         <li><strong>Maternity Leave:</strong> 10 weeks fully paid for female employees.</li>
-                         <li><strong>Hajj Leave:</strong> 10 to 15 days after 2 years of service.</li>
-                         <li><strong>Iddah Leave:</strong> Granted as per Saudi labor law regulations.</li>
-                     </ul>
-                 </div>
--                <div class="font-arabic text-right text-sm text-justify pl-4 border-l border-gray-200" dir="rtl">
-+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (10) - الغياب | المادة (11) - الإجازات</h3>
-                     <h4 class="font-bold mb-1">الغياب</h4>
-                     <p class="mb-3">يترتب على الغياب بدون عذر مشروع خصم من الأجر بما يعادل مدة الغياب وفقا للمادة (91) من نظام العمل. يجب على الموظفين الذين لا يستطيعون الحضور إلى العمل إخطار مشرفهم أو إدارة الموارد البشرية في أسرع وقت ممكن.</p>
-                     
-                     <h4 class="font-bold mb-1">الإجازات</h4>
-                     <ul class="list-disc pr-4 space-y-1 text-xs">
-                         <li><strong>الإجازة السنوية:</strong> 21 يوماً سنوياً. 30 يوماً بعد 5 سنوات من الخدمة.</li>
-                         <li><strong>الإجازة المرضية:</strong> 30 يوماً بأجر كامل، 60 يوماً بنسبة 75%، 30 يوماً بدون أجر (تتطلب شهادة طبية).</li>
-                         <li><strong>إجازة الزواج:</strong> 5 أيام.</li>
-                         <li><strong>إجازة الأبوة:</strong> 3 أيام للموظفين الذكور.</li>
-                         <li><strong>إجازة الأمومة:</strong> 10 أسابيع مدفوعة الأجر بالكامل للموظفات.</li>
-                         <li><strong>إجازة الحج:</strong> 10 إلى 15 يوماً بعد سنتين من الخدمة.</li>
-                         <li><strong>إجازة العدة:</strong> تمنح وفقاً لأنظمة قانون العمل السعودية.</li>
-                     </ul>
-                 </div>
-             </div>
- 
-             <!-- Article 12 -->
--            <div class="grid grid-cols-2 gap-8 border-b print-border pb-6 avoid-break">
--                <div class="font-english text-left text-sm text-justify pr-4" dir="ltr">
-+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
-+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">Article 12 – Disciplinary Action</h3>
-                     <p class="mb-2">When an employee violates company rules, policies, or fails to meet required standards of work, disciplinary action may be initiated in accordance with Article 80 of the Saudi Labor Law.</p>
-                     <p class="mb-2">Disciplinary actions available to management include warning (written or verbal), wage deduction (not exceeding 5 days per month), suspension from work with partial or no pay, or termination of employment. No penalty shall be imposed without investigation.</p>
-                     <p>The company reserves the right to take immediate termination action in cases of serious violations including but not limited to theft, fraud, workplace violence, or gross negligence, which may bypass progressive discipline per Article 80.</p>
-                 </div>
--                <div class="font-arabic text-right text-sm text-justify pl-4 border-l border-gray-200" dir="rtl">
-+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (12) - الجزاءات التأديبية</h3>
-                     <p class="mb-2">عندما ينتهك الموظف قواعد الشركة أو سياساتها أو يفشل في الوفاء بالمعايير المطلوبة للعمل، فقد تتخذ إجراءات تأديبية وفقاً للمادة (80) من نظام العمل السعودي.</p>
-                     <p class="mb-2">تتضمن الإجراءات التأديبية المتاحة للإدارة الإنذار (مكتوباً أو شفهياً) أو الحسم من الأجر (بما لا يتجاوز أجر خمسة أيام في الشهر) أو الإيقاف عن العمل مع أو بدون أجر، أو فسخ عقد العمل. لا يجوز توقيع أي جزاء إلا بعد إجراء تحقيق.</p>
-                     <p>تحتفظ الشركة بالحق في اتخاذ إجراء فصل فوري في حالات الانتهاكات الجسيمة بما في ذلك السرقة أو الاحتيال أو العنف في مكان العمل أو الإهمال الجسيم، والتي قد تؤدي إلى الفصل المباشر وفقا للمادة (80).</p>
-                 </div>
-             </div>
- 
-             <!-- Articles 13-14 -->
--            <div class="grid grid-cols-2 gap-8 border-b print-border pb-6 avoid-break">
--                <div class="font-english text-left text-sm text-justify pr-4" dir="ltr">
-+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
-+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 13-14 - Termination & Safety</h3>
-                     <h4 class="font-bold mb-1">End of Service Benefits</h4>
-                     <p class="mb-3">End of Service Benefits shall be calculated in accordance with Article 84 of the Saudi Labor Law. For the first five years of service, employees receive half a month's wage for each year. For each year beyond five years, employees receive one month's wage. These benefits are payable upon termination except in cases of serious violations under Article 80.</p>
-                     
-                     <h4 class="font-bold mb-1">Occupational Safety</h4>
-                     <p>The company provides a safe working environment in compliance with Saudi occupational safety regulations. Employees must comply with safety instructions and use provided personal protective equipment (PPE). The company maintains insurance coverage for work-related injuries.</p>
-                 </div>
--                <div class="font-arabic text-right text-sm text-justify pl-4 border-l border-gray-200" dir="rtl">
-+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (13) - مكافأة نهاية الخدمة | المادة (14) - السلامة المهنية</h3>
-                     <h4 class="font-bold mb-1">مكافأة نهاية الخدمة</h4>
-                     <p class="mb-3">تحسب مكافأة نهاية الخدمة وفقاً للمادة (84) من نظام العمل. للسنوات الخمس الأولى، يحصل الموظف على نصف أجر شهر عن كل سنة. ولكل سنة بعد ذلك، يحصل على أجر شهر كامل. يستحق صرف المكافأة عند إنهاء علاقة العمل باستثناء حالات الإنهاء بسبب انتهاكات جسيمة وفق المادة (80).</p>
-                     
-                     <h4 class="font-bold mb-1">السلامة المهنية</h4>
-                     <p>تلتزم الشركة بتوفير بيئة عمل آمنة بما يتوافق مع أنظمة الصحة والسلامة المهنية. يجب على الموظفين الالتزام بتعليمات السلامة واستخدام معدات الحماية الشخصية (PPE) المقدمة. تحافظ الشركة على تغطية تأمينية لإصابات العمل.</p>
-                 </div>
-             </div>
- 
-             <!-- Articles 15-16 -->
--            <div class="grid grid-cols-2 gap-8 pb-10 avoid-break">
--                <div class="font-english text-left text-sm text-justify pr-4" dir="ltr">
-+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
-+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 15-16 - Grievances & Final Provisions</h3>
-                     <h4 class="font-bold mb-1">Grievance Procedure</h4>
-                     <p class="mb-3">Employees may submit written complaints to their supervisor or HR regarding employment conditions. HR will investigate and provide a written response within 14 days. If unresolved, the issue may be escalated to senior management. The company maintains strict confidentiality and prohibits retaliation.</p>
-                     
-                     <h4 class="font-bold mb-1">Final Provisions</h4>
-                     <p>These regulations enter into force upon approval by the Ministry of Human Resources and publication. The Arabic version shall be considered the controlling version in case of discrepancies. Employees should contact HR for any clarifications.</p>
-                 </div>
--                <div class="font-arabic text-right text-sm text-justify pl-4 border-l border-gray-200" dir="rtl">
-+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
-                     <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (15) - التظلمات | المادة (16) - أحكام ختامية</h3>
-                     <h4 class="font-bold mb-1">إجراءات التظلم</h4>
-                     <p class="mb-3">يجوز للموظفين تقديم شكاوى مكتوبة إلى المشرف أو إدارة الموارد البشرية. وستوفر الإدارة استجابة مكتوبة في غضون 14 يوماً. إذا لم تحل المشكلة، يمكن تصعيدها للإدارة العليا. تحتفظ الشركة بالسرية التامة وتحظر الانتقام.</p>
-                     
-                     <h4 class="font-bold mb-1">أحكام ختامية</h4>
-                     <p>تدخل هذه اللائحة حيز التنفيذ بعد اعتمادها من الوزارة ونشرها. تعتبر النسخة العربية النسخة المهيمنة في حالة وجود أي تناقضات. للموظفين التواصل مع إدارة الموارد البشرية لأية استفسارات.</p>
-                 </div>
-             </div>
- 
-         </div> <!-- End of Content -->
- 
-         <!-- SIGNATURES AND STAMP AREA -->
--        <div class="mt-16 pt-12 border-t-2 border-[#8b6131] avoid-break">
-+        <div class="mt-12 pt-10 border-t-2 border-[var(--brand-primary)] avoid-break">
-             <h3 class="text-center font-bold text-xl mb-12 font-english text-gray-800">Acknowledgment and Signatures <span class="font-arabic">| الإقرار والتوقيعات</span></h3>
-             
-             <div class="grid grid-cols-2 gap-12 text-center mb-16 px-12">
-                 <!-- HR Manager -->
-                 <div>
-                     <div class="font-english font-bold mb-1">HR Manager</div>
-                     <div class="font-arabic text-sm text-gray-600 mb-8">مدير الموارد البشرية</div>
-                     <div class="border-b border-gray-400 w-3/4 mx-auto mb-2 border-dashed"></div>
-                 </div>
- 
-                 <!-- General Manager -->
-                 <div>
-                     <div class="font-english font-bold mb-1">General Manager</div>
-                     <div class="font-arabic text-sm text-gray-600 mb-8">المدير العام</div>
-                     <div class="border-b border-gray-400 w-3/4 mx-auto mb-2 border-dashed"></div>
-                 </div>
-             </div>
-         </div>
- 
-         <!-- FOOTER -->
-         <footer class="mt-12 pt-6 border-t border-gray-200 text-center avoid-break">
-             <!-- Addresses -->
-             <div class="flex flex-col items-center gap-1 mb-4">
-                 <div class="flex items-center gap-2 text-sm text-gray-600 font-english">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#8b6131]" viewBox="0 0 20 20" fill="currentColor">
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eman Bakery - Internal Work Regulation</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for Professional English and Arabic Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --brand-primary: #6f4e2e;
+            --brand-primary-dark: #4f351d;
+            --ink-main: #1f2937;
+            --ink-muted: #4b5563;
+            --paper-bg: #f1f3f7;
+            --rule-soft: #d9dee8;
+        }
+
+        body {
+            background: var(--paper-bg);
+            color: var(--ink-main);
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .font-arabic { font-family: 'Cairo', sans-serif; }
+        .font-english { font-family: 'Inter', sans-serif; }
+
+        .a4-container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 32px auto;
+            background: #fff;
+            padding: 18mm 12mm;
+            box-shadow: 0 16px 40px rgba(17, 24, 39, 0.12);
+            border-top: 6px solid var(--brand-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .a4-container::before {
+            content: "EMAN BAKERY";
+            position: absolute;
+            inset: 44% auto auto 50%;
+            transform: translate(-50%, -50%) rotate(-32deg);
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            letter-spacing: 0.3rem;
+            font-size: 56px;
+            color: rgba(111, 78, 46, 0.04);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .doc-meta {
+            border: 1px solid var(--rule-soft);
+            background: #f9fafb;
+            font-size: 11px;
+            margin-bottom: 28px;
+        }
+
+        .doc-meta p { margin: 0; }
+
+        .article-block {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 14px;
+            background: linear-gradient(180deg, rgba(249,250,251,0.65) 0%, #fff 100%);
+            margin-bottom: 14px;
+        }
+
+        .article-block h3 { color: var(--brand-primary); }
+
+        .avoid-break {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .print-border { border-bottom-color: transparent !important; }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 8mm 7mm;
+            }
+
+            body, html {
+                background: #fff !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                height: auto !important;
+            }
+
+            .a4-container {
+                width: 100% !important;
+                min-height: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                border-top-width: 4px !important;
+            }
+
+            .a4-container::before { display: none; }
+
+            .grid {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+            }
+
+            .grid-cols-2 > div {
+                flex: 1 1 50% !important;
+                width: 50% !important;
+                max-width: 50% !important;
+            }
+
+            .article-block {
+                border: none !important;
+                border-radius: 0 !important;
+                padding: 0 0 14px 0 !important;
+                margin-bottom: 8px !important;
+                background: transparent !important;
+                border-bottom: 1px solid #e5e7eb !important;
+            }
+
+            .avoid-break {
+                page-break-inside: auto !important;
+                break-inside: auto !important;
+                -webkit-column-break-inside: auto !important;
+            }
+
+            header, .doc-meta, .text-center.mb-8, footer, .mt-12.pt-10 {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Floating Print Button (Hidden during actual printing) -->
+    <div class="fixed bottom-6 right-6 no-print z-50">
+        <button onclick="window.print()" class="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-dark)] text-white font-english font-semibold py-3 px-5 rounded-md shadow-lg flex items-center gap-2 transition-all duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            Print Document (A4)
+        </button>
+    </div>
+
+    <!-- Document Container -->
+    <div class="a4-container">
+        
+        <!-- HEADER / LETTERHEAD -->
+        <header class="flex justify-between items-center border-b border-[var(--rule-soft)] pb-6 mb-4">
+            <!-- Left: English Details -->
+            <div class="font-english text-xs text-gray-600 space-y-1 w-1/3 text-left">
+                <p class="font-bold text-gray-800 text-sm">Emhan Bakery Jeddah for Bread Co.</p>
+                <p>CR: 4030331653</p>
+                <p>Unified No.: 9-4000319</p>
+                <p>National Unified No.: 7015036309</p>
+            </div>
+
+            <!-- Center: Logo -->
+            <div class="w-1/3 flex justify-center">
+                <img src="https://emanbakeries.com/images/branding/logo.png" alt="Eman Bakery Logo" class="h-20 object-contain">
+            </div>
+
+            <!-- Right: Arabic Details -->
+            <div class="font-arabic text-xs text-gray-600 space-y-1 w-1/3 text-right" dir="rtl">
+                <p class="font-bold text-gray-800 text-sm">شركة مخابز إيمان جدة للخبز</p>
+                <p>السجل التجاري : 4030331653</p>
+                <p>الرقم الموحد: 9-4000319</p>
+                <p>الرقم الموحد الوطني: 7015036309</p>
+            </div>
+        </header>
+
+        <!-- DOCUMENT META -->
+        <div class="doc-meta grid grid-cols-3 gap-0 divide-x divide-gray-300 text-gray-600 font-english">
+            <p class="p-2 text-center"><span class="font-semibold text-gray-800">Document No.</span> HR-IWR-2026</p>
+            <p class="p-2 text-center"><span class="font-semibold text-gray-800">Version</span> 1.0</p>
+            <p class="p-2 text-center"><span class="font-semibold text-gray-800">Effective Date</span> 01 Jan 2026</p>
+        </div>
+
+        <!-- TITLE -->
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold font-english text-[var(--brand-primary)] uppercase tracking-[0.2em] mb-2">Internal Work Regulation</h1>
+            <h2 class="text-2xl font-bold font-arabic text-[var(--brand-primary)] tracking-wide">لائحة تنظيم العمل الداخلية</h2>
+        </div>
+
+        <!-- CONTENT BILINGUAL GRID -->
+        <div class="space-y-8">
+
+            <!-- Article 1 -->
+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">Article 1 – General Provisions</h3>
+                    <p class="mb-2">This Internal Work Regulation is issued in accordance with the Saudi Labor Law promulgated by Royal Decree No. (M/51) dated 23/08/1426H and its amendments. These regulations have been prepared to establish a clear framework for employment relationships within our organization and to ensure compliance with national labor standards.</p>
+                    <p class="mb-2">These regulations apply to all employees of Emhan Bakery Jeddah for Bread Co. and serve as a comprehensive guide to employment terms, working conditions, employee rights, and employer obligations. They complement individual employment contracts and must be applied in a manner consistent with the provisions of the Saudi Labor Law.</p>
+                    <p class="mb-2">The purpose of these regulations is to create a transparent, fair, and productive work environment where both employers and employees understand their respective rights and responsibilities. All provisions contained herein must be interpreted and applied in accordance with applicable labor legislation and regulations.</p>
+                    <p>Employees are required to familiarize themselves with these regulations upon joining the company, and management is committed to ensuring that copies are made available to all staff members. Any questions regarding the application or interpretation of these provisions should be directed to the Human Resources department.</p>
+                </div>
+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (1) - أحكام عامة</h3>
+                    <p class="mb-2">تصدر لائحة تنظيم العمل هذه وفقاً لنظام العمل السعودي الصادر بالمرسوم الملكي رقم (م/51) وتاريخ 23/08/1426هـ وتعديلاته. وتم إعداد هذه اللائحة لتأسيس إطار واضح لعلاقات العمل داخل منظمتنا ولضمان الامتثال للمعايير الوطنية للعمل.</p>
+                    <p class="mb-2">وتسري هذه اللائحة على جميع العاملين في شركة مخابز إيمان جدة للخبز وتعد مكملة لعقود العمل، ويجب تطبيقها بما يتماشى مع أحكام نظام العمل.</p>
+                    <p class="mb-2">الغرض من هذه اللائحة هو خلق بيئة عمل شفافة وعادلة ومنتجة حيث يفهم كل من أصحاب العمل والموظفين حقوقهم ومسؤولياتهم المقابلة. ويجب تفسير وتطبيق جميع الأحكام الواردة هنا وفقاً للتشريعات واللوائح الأنظمة المعمول بها.</p>
+                    <p>يطلب من الموظفين التعرف على هذه اللائحة عند الانضمام إلى الشركة، وتعتزم الإدارة ضمان توفير نسخ منها لجميع الموظفين. يجب توجيه أي استفسارات بشأن التطبيق أو التفسير لهذه الأحكام إلى إدارة الموارد البشرية.</p>
+                </div>
+            </div>
+
+            <!-- Articles 2-3 -->
+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 2-3 – Employment Contracts & Working Hours</h3>
+                    <h4 class="font-bold mb-1">Employment Contracts</h4>
+                    <p class="mb-3">Employment contracts shall be concluded in writing through the Qiwa platform, which is the official electronic platform designated by the Ministry of Human Resources and Social Development for managing employment contracts in Saudi Arabia. Contracts may be fixed-term and renewable. The contract duration will be specified at the time of hiring based on the nature of the position and business requirements.</p>
+                    <p class="mb-4">The probation period shall be 90 days within legal limits. During this probationary period, both the employer and employee have the right to terminate the employment relationship with a 7-day notice, as stipulated in Article 57 of the Labor Law.</p>
+                    
+                    <h4 class="font-bold mb-1">Working Hours</h4>
+                    <p class="mb-2">Normal working hours shall not exceed 8 hours per day and 48 hours per week. The company shall establish specific working hours for different positions and departments based on operational requirements. Employees are required to work the full scheduled hours as assigned and must obtain prior approval for any variations from the normal working schedule.</p>
+                    <p>Working hours may be adjusted during special circumstances such as business emergencies, peak operational periods, or as otherwise permitted by the Labor Law.</p>
+                </div>
+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (2) - عقود العمل | المادة (3) - ساعات العمل</h3>
+                    <h4 class="font-bold mb-1">عقود العمل</h4>
+                    <p class="mb-3">يتم إبرام عقود العمل كتابة عبر منصة قوى، وهي المنصة الإلكترونية الرسمية المعتمدة من وزارة الموارد البشرية والتنمية الاجتماعية لإدارة عقود العمل في المملكة العربية السعودية. تكون العقود محددة المدة وقابلة للتجديد حسب حاجة العمل. ومدة العقد تحدد وقت التوظيف بناءً على طبيعة الوظيفة ومتطلبات العمل.</p>
+                    <p class="mb-4">تكون مدة التجربة تسعين (90) يوماً وفق الحدود النظامية. خلال فترة التجربة، يحق لكل من صاحب العمل والموظف إنهاء علاقة العمل بإشعار مدته سبعة أيام، كما هو منصوص عليه في المادة (57) من نظام العمل.</p>
+                    
+                    <h4 class="font-bold mb-1">ساعات العمل</h4>
+                    <p class="mb-2">لا يجوز أن تزيد ساعات العمل الفعلية عن ثماني (8) ساعات يومياً وثمان وأربعين (48) ساعة أسبوعياً. وتعمل الشركة على تحديد ساعات العمل الخاصة بكل وظيفة وإدارات بناءً على طبيعة العمل المرتبطة بكل منها. ويجب على الموظفين العمل بالكامل بالساعات المجدولة المخصصة لهم، ويجب عليهم الحصول على موافقة مسبقة لأي اختلافات عن الجدول الزمني العادي.</p>
+                    <p>قد يتم تعديل ساعات العمل خلال الظروف الخاصة مثل حالات الطوارئ، أو فترات العمل المزدحمة، أو كما يسمح به نظام العمل.</p>
+                </div>
+            </div>
+
+            <!-- Articles 4-5 -->
+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 4-5 – Shift System & Weekly Rest</h3>
+                    <h4 class="font-bold mb-1">Shift System</h4>
+                    <p class="mb-3">Due to operational requirements, the company operates a shift system including day and night shifts. This arrangement is necessary to ensure continuous bakery operations and meet customer demand throughout the day and night hours. The shift schedule shall be determined by management based on production requirements and may be subject to change as operational needs dictate.</p>
+                    
+                    <h4 class="font-bold mb-1">Weekly Rest</h4>
+                    <p class="mb-2">Friday shall be the official weekly rest day for all employees, in accordance with Islamic tradition and Saudi labor regulations. If business necessity requires work on Friday, compensation shall be provided at 150% of the hourly wage or by granting a compensatory day off. Such work on Friday shall only be authorized when essential for business operations.</p>
+                </div>
+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (4) - نظام الورديات | المادة (5) - الراحة الأسبوعية</h3>
+                    <h4 class="font-bold mb-1">نظام الورديات</h4>
+                    <p class="mb-3">نظراً لطبيعة نشاط الشركة، يُطبق نظام الورديات الذي يشمل الوردية النهارية والوردية الليلية. وتعد هذه الصيغة ضرورية لضمان عمليات الخبز المستمرة وتلبية طلبات العملاء على مدار اليوم. يُحدد مدير العمل جدول الورديات بناءً على متطلبات الإنتاج وقد يكون معرضًا للتعديل كما تقتضى الحاجة التشغيلية.</p>
+                    
+                    <h4 class="font-bold mb-1">الراحة الأسبوعية</h4>
+                    <p class="mb-2">يكون يوم الجمعة هو يوم الراحة الأسبوعية الرسمية لجميع الموظفين وفقا للعرف الإسلامي وأنظمة العمل السعودية. في حال اقتضت مصلحة العمل تشغيل الموظف في هذا اليوم، يتم تعويضه بأجر إضافي يعادل 150% من أجر الساعة أو بمنحه يوم راحة بديل. ويُسمح بالعمل يوم الجمعة فقط عند الضرورة للأعمال التشغيلية.</p>
+                </div>
+            </div>
+
+             <!-- Articles 6-7 -->
+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 6-7 - Overtime & Wages</h3>
+                    <h4 class="font-bold mb-1">Overtime</h4>
+                    <p class="mb-3">Overtime work shall be compensated at 150% of the hourly wage in accordance with Article 107 of the Labor Law. The company shall only authorize overtime work when necessary for business operations, and employees must obtain prior approval before performing any overtime work. Unauthorized overtime work will not be compensated.</p>
+                    
+                    <h4 class="font-bold mb-1">Wages</h4>
+                    <p>Wages shall be paid monthly through the Wage Protection System (WPS). All employees must have an active bank account enrolled in the WPS system. The wage shall be as specified in the employment contract and structured as basic wage unless otherwise agreed. Wage payments shall be made on or before the designated payment date each month.</p>
+                </div>
+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (6) - العمل الإضافي | المادة (7) - الأجور</h3>
+                    <h4 class="font-bold mb-1">العمل الإضافي</h4>
+                    <p class="mb-3">يتم تعويض العمل الإضافي بما يعادل 150% من أجر الساعة وفقاً للمادة (107) من نظام العمل. ويجوز للشركة السماح بالعمل الإضافي فقط عند الضرورة لأغراض الأعمال، ويجب على الموظفين الحصول على موافقة مسبقة قبل القيام بأي عمل إضافي، لن يعوض العمل الإضافي غير المصرح به.</p>
+                    
+                    <h4 class="font-bold mb-1">الأجور</h4>
+                    <p>تصرف الأجور شهرياً عبر نظام حماية الأجور (WPS). ويجب أن يكون لدى جميع الموظفين حساب بنكي نشط مسجل في نظام حماية الأجور. ويكون الأجر وفقاً لما هو محدد في عقد العمل ويعتبر أجراً أساسياً ما لم يتم الاتفاق كتابة على خلاف ذلك. سيتم دفع الأجر في موعد الدفع المحدد أو قبله كل شهر.</p>
+                </div>
+            </div>
+
+            <!-- Articles 8-9 -->
+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 8-9 – Benefits & Attendance</h3>
+                    <h4 class="font-bold mb-1">Accommodation & Transportation</h4>
+                    <p class="mb-3">The company provides accommodation and transportation as in-kind benefits. The provision of accommodation and transportation does not constitute cash allowances unless specifically agreed in writing. As such, these benefits do not increase the employee's basic wage for the purpose of calculating overtime or end of service benefits.</p>
+                    
+                    <h4 class="font-bold mb-1">Attendance</h4>
+                    <p>The company shall implement a biometric attendance system to accurately record employee presence. Employees must comply with attendance procedures including clocking in at the beginning of their shift, and clocking out at the end. Failure to properly register attendance may result in disciplinary action or wage deduction.</p>
+                </div>
+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (8) - السكن والنقل | المادة (9) - الحضور والانصراف</h3>
+                    <h4 class="font-bold mb-1">السكن والنقل</h4>
+                    <p class="mb-3">توفر الشركة السكن والنقل للموظفين كميزة عينية. لا تعد هذه المزايا بدلات نقدية ما لم يتم الاتفاق عليها كتابة. وبالتالي، لا تزيد هذه المزايا الأجر الأساسي للموظف لأغراض حساب العمل الإضافي أو مكافآت نهاية الخدمة، إلا إذا نص على خلاف ذلك في عقد التوظيف.</p>
+                    
+                    <h4 class="font-bold mb-1">الحضور والانصراف</h4>
+                    <p>تعمل الشركة على تطبيق نظام حضور وانصراف إلكتروني يعتمد على البيانات الحيوية. يجب على الموظفين الالتزام بإجراءات الحضور بما في ذلك التسجيل في بداية وردية العمل وتسجيل الخروج في النهاية. قد ينتج عن عدم التسجيل الصحيح للحضور إجراء تأديبي أو حسم من الأجر.</p>
+                </div>
+            </div>
+
+            <!-- Articles 10-11 -->
+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 10-11 - Absence & Leaves</h3>
+                    <h4 class="font-bold mb-1">Absence</h4>
+                    <p class="mb-3">Unauthorized absence shall result in wage deduction equivalent to the absence period, in accordance with Article 91 of the Labor Law. Employees unable to attend work must notify their supervisor or HR as early as possible.</p>
+                    
+                    <h4 class="font-bold mb-1">Leaves</h4>
+                    <ul class="list-disc pl-4 space-y-1 text-xs">
+                        <li><strong>Annual Leave:</strong> 21 days per year. 30 days after 5 years of service.</li>
+                        <li><strong>Sick Leave:</strong> 30 days full pay, 60 days 75% pay, 30 days unpaid (requires medical certificate).</li>
+                        <li><strong>Marriage Leave:</strong> 5 days.</li>
+                        <li><strong>Paternity Leave:</strong> 3 days for male employees.</li>
+                        <li><strong>Maternity Leave:</strong> 10 weeks fully paid for female employees.</li>
+                        <li><strong>Hajj Leave:</strong> 10 to 15 days after 2 years of service.</li>
+                        <li><strong>Iddah Leave:</strong> Granted as per Saudi labor law regulations.</li>
+                    </ul>
+                </div>
+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (10) - الغياب | المادة (11) - الإجازات</h3>
+                    <h4 class="font-bold mb-1">الغياب</h4>
+                    <p class="mb-3">يترتب على الغياب بدون عذر مشروع خصم من الأجر بما يعادل مدة الغياب وفقا للمادة (91) من نظام العمل. يجب على الموظفين الذين لا يستطيعون الحضور إلى العمل إخطار مشرفهم أو إدارة الموارد البشرية في أسرع وقت ممكن.</p>
+                    
+                    <h4 class="font-bold mb-1">الإجازات</h4>
+                    <ul class="list-disc pr-4 space-y-1 text-xs">
+                        <li><strong>الإجازة السنوية:</strong> 21 يوماً سنوياً. 30 يوماً بعد 5 سنوات من الخدمة.</li>
+                        <li><strong>الإجازة المرضية:</strong> 30 يوماً بأجر كامل، 60 يوماً بنسبة 75%، 30 يوماً بدون أجر (تتطلب شهادة طبية).</li>
+                        <li><strong>إجازة الزواج:</strong> 5 أيام.</li>
+                        <li><strong>إجازة الأبوة:</strong> 3 أيام للموظفين الذكور.</li>
+                        <li><strong>إجازة الأمومة:</strong> 10 أسابيع مدفوعة الأجر بالكامل للموظفات.</li>
+                        <li><strong>إجازة الحج:</strong> 10 إلى 15 يوماً بعد سنتين من الخدمة.</li>
+                        <li><strong>إجازة العدة:</strong> تمنح وفقاً لأنظمة قانون العمل السعودية.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Article 12 -->
+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">Article 12 – Disciplinary Action</h3>
+                    <p class="mb-2">When an employee violates company rules, policies, or fails to meet required standards of work, disciplinary action may be initiated in accordance with Article 80 of the Saudi Labor Law.</p>
+                    <p class="mb-2">Disciplinary actions available to management include warning (written or verbal), wage deduction (not exceeding 5 days per month), suspension from work with partial or no pay, or termination of employment. No penalty shall be imposed without investigation.</p>
+                    <p>The company reserves the right to take immediate termination action in cases of serious violations including but not limited to theft, fraud, workplace violence, or gross negligence, which may bypass progressive discipline per Article 80.</p>
+                </div>
+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (12) - الجزاءات التأديبية</h3>
+                    <p class="mb-2">عندما ينتهك الموظف قواعد الشركة أو سياساتها أو يفشل في الوفاء بالمعايير المطلوبة للعمل، فقد تتخذ إجراءات تأديبية وفقاً للمادة (80) من نظام العمل السعودي.</p>
+                    <p class="mb-2">تتضمن الإجراءات التأديبية المتاحة للإدارة الإنذار (مكتوباً أو شفهياً) أو الحسم من الأجر (بما لا يتجاوز أجر خمسة أيام في الشهر) أو الإيقاف عن العمل مع أو بدون أجر، أو فسخ عقد العمل. لا يجوز توقيع أي جزاء إلا بعد إجراء تحقيق.</p>
+                    <p>تحتفظ الشركة بالحق في اتخاذ إجراء فصل فوري في حالات الانتهاكات الجسيمة بما في ذلك السرقة أو الاحتيال أو العنف في مكان العمل أو الإهمال الجسيم، والتي قد تؤدي إلى الفصل المباشر وفقا للمادة (80).</p>
+                </div>
+            </div>
+
+            <!-- Articles 13-14 -->
+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 13-14 - Termination & Safety</h3>
+                    <h4 class="font-bold mb-1">End of Service Benefits</h4>
+                    <p class="mb-3">End of Service Benefits shall be calculated in accordance with Article 84 of the Saudi Labor Law. For the first five years of service, employees receive half a month's wage for each year. For each year beyond five years, employees receive one month's wage. These benefits are payable upon termination except in cases of serious violations under Article 80.</p>
+                    
+                    <h4 class="font-bold mb-1">Occupational Safety</h4>
+                    <p>The company provides a safe working environment in compliance with Saudi occupational safety regulations. Employees must comply with safety instructions and use provided personal protective equipment (PPE). The company maintains insurance coverage for work-related injuries.</p>
+                </div>
+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (13) - مكافأة نهاية الخدمة | المادة (14) - السلامة المهنية</h3>
+                    <h4 class="font-bold mb-1">مكافأة نهاية الخدمة</h4>
+                    <p class="mb-3">تحسب مكافأة نهاية الخدمة وفقاً للمادة (84) من نظام العمل. للسنوات الخمس الأولى، يحصل الموظف على نصف أجر شهر عن كل سنة. ولكل سنة بعد ذلك، يحصل على أجر شهر كامل. يستحق صرف المكافأة عند إنهاء علاقة العمل باستثناء حالات الإنهاء بسبب انتهاكات جسيمة وفق المادة (80).</p>
+                    
+                    <h4 class="font-bold mb-1">السلامة المهنية</h4>
+                    <p>تلتزم الشركة بتوفير بيئة عمل آمنة بما يتوافق مع أنظمة الصحة والسلامة المهنية. يجب على الموظفين الالتزام بتعليمات السلامة واستخدام معدات الحماية الشخصية (PPE) المقدمة. تحافظ الشركة على تغطية تأمينية لإصابات العمل.</p>
+                </div>
+            </div>
+
+            <!-- Articles 15-16 -->
+            <div class="grid grid-cols-2 gap-6 article-block avoid-break">
+                <div class="font-english text-left text-sm text-justify pr-2" dir="ltr">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">Articles 15-16 - Grievances & Final Provisions</h3>
+                    <h4 class="font-bold mb-1">Grievance Procedure</h4>
+                    <p class="mb-3">Employees may submit written complaints to their supervisor or HR regarding employment conditions. HR will investigate and provide a written response within 14 days. If unresolved, the issue may be escalated to senior management. The company maintains strict confidentiality and prohibits retaliation.</p>
+                    
+                    <h4 class="font-bold mb-1">Final Provisions</h4>
+                    <p>These regulations enter into force upon approval by the Ministry of Human Resources and publication. The Arabic version shall be considered the controlling version in case of discrepancies. Employees should contact HR for any clarifications.</p>
+                </div>
+                <div class="font-arabic text-right text-sm text-justify pl-2 border-l border-gray-200" dir="rtl">
+                    <h3 class="font-bold text-lg text-[#8b6131] mb-3">المادة (15) - التظلمات | المادة (16) - أحكام ختامية</h3>
+                    <h4 class="font-bold mb-1">إجراءات التظلم</h4>
+                    <p class="mb-3">يجوز للموظفين تقديم شكاوى مكتوبة إلى المشرف أو إدارة الموارد البشرية. وستوفر الإدارة استجابة مكتوبة في غضون 14 يوماً. إذا لم تحل المشكلة، يمكن تصعيدها للإدارة العليا. تحتفظ الشركة بالسرية التامة وتحظر الانتقام.</p>
+                    
+                    <h4 class="font-bold mb-1">أحكام ختامية</h4>
+                    <p>تدخل هذه اللائحة حيز التنفيذ بعد اعتمادها من الوزارة ونشرها. تعتبر النسخة العربية النسخة المهيمنة في حالة وجود أي تناقضات. للموظفين التواصل مع إدارة الموارد البشرية لأية استفسارات.</p>
+                </div>
+            </div>
+
+        </div> <!-- End of Content -->
+
+        <!-- SIGNATURES AND STAMP AREA -->
+        <div class="mt-12 pt-10 border-t-2 border-[var(--brand-primary)] avoid-break">
+            <h3 class="text-center font-bold text-xl mb-12 font-english text-gray-800">Acknowledgment and Signatures <span class="font-arabic">| الإقرار والتوقيعات</span></h3>
+            
+            <div class="grid grid-cols-2 gap-12 text-center mb-16 px-12">
+                <!-- HR Manager -->
+                <div>
+                    <div class="font-english font-bold mb-1">HR Manager</div>
+                    <div class="font-arabic text-sm text-gray-600 mb-8">مدير الموارد البشرية</div>
+                    <div class="border-b border-gray-400 w-3/4 mx-auto mb-2 border-dashed"></div>
+                </div>
+
+                <!-- General Manager -->
+                <div>
+                    <div class="font-english font-bold mb-1">General Manager</div>
+                    <div class="font-arabic text-sm text-gray-600 mb-8">المدير العام</div>
+                    <div class="border-b border-gray-400 w-3/4 mx-auto mb-2 border-dashed"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="mt-12 pt-6 border-t border-gray-200 text-center avoid-break">
+            <!-- Addresses -->
+            <div class="flex flex-col items-center gap-1 mb-4">
+                <div class="flex items-center gap-2 text-sm text-gray-600 font-english">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#8b6131]" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Bldg 2790, Hira St, An Nahdah Dist, Jeddah 23523</span>
+                </div>
+                <div class="text-sm text-gray-500 font-arabic" dir="rtl">
+                    <span>مبنى 2790، شارع حراء، حي النهضة، جدة 23523</span>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="flex justify-center items-center gap-12 text-sm text-gray-600 font-english">
+                <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#8b6131]" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                    </svg>
+                    <a href="mailto:info@emanbakeries.com" class="hover:text-[#8b6131] transition-colors">info@emanbakeries.com</a>
+                </div>
+                <div class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#8b6131]" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd" />
+                    </svg>
+                    <a href="https://emanbakeries.com" target="_blank" class="hover:text-[#8b6131] transition-colors">www.emanbakeries.com</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+</body>
+</html>
+index.html
+Lines 1-456
